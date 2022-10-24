@@ -1,0 +1,26 @@
+package ${package}.${moduleName}.dao;
+
+
+#if(${hasList})
+import java.util.List;
+#end
+
+import ${package}.${moduleName}.entity.${className}Entity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Mapper
+@Repository
+public interface ${className}Dao extends BaseMapper<${className}Entity> {
+
+    List<${className}Entity> getSelect${className}(@Param("data") ${className}Entity ${classname})
+	
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${package}.${moduleName}.dao.${className}Dao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="${package}.${moduleName}.entity.${className}Entity" id="${classname}Map">
+#foreach($column in $columns)
+#if($column.columnName == $pk.columnName)
+        <id property="${column.attrname}" column="${column.columnName}"/>
+#else
+        <result property="${column.attrname}" column="${column.columnName}"/>
+#end
+#end
+    </resultMap>
+
+#set($fromHeadNames = "")
+    <sql id = "fromHead">
+#foreach($column in $columns)
+    #set($fromHeadNames=$fromHeadNames +"`"+${column.columnName}+"`,")
+#end
+#set($fromHeadNames=$fromHeadNames.substring(0,$fromHeadNames.lastIndexOf(',')))
+        $fromHeadNames
+    </sql>
+
+    <sql id="whereSelect">
+        <where>
+#foreach($column in $columns)
+#if($column.attrType == 'Integer' || $column.attrType == 'Long')
+            <if test = "data.${column.attrname} != null and data.${column.attrname}.toString() !== '0'">
+                and t.${column.columnName} = #{data.${column.attrname}}
+            </if>
+#else
+            <if test = "data.${column.attrname} != null and data.${column.attrname}.toString() != ''">
+                and t.${column.columnName} = #{data.${column.attrname}}
+            </if>
+#end
+#end
+        </where>
+    </sql>
+
+    <select id = "getSelect${className}" resultMap="${classname}Map">
+        select
+        <include refid = "fromHead"/>
+        from ${tableName} t
+        <include refid = "whereSelect"/>
+#**
+ <where>
+#foreach($column in $columns)
+#if($column.attrType == 'Integer' || $column.attrType == 'Long')
+            <if test = "data.${column.attrname} != null and data.${column.attrname}.toString() !== '0'">
+                and t.${column.columnName} = #{data.${column.attrname}}
+            </if>
+#else
+            <if test = "data.${column.attrname} != null and data.${column.attrname}.toString() != ''">
+                and t.${column.columnName} = #{data.${column.attrname}}
+            </if>
+#end
+#end
+        </where>
+*#
+ </select>
+
+</mapper>
